@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use std::env;
-use std::{path::{Path, PathBuf}, error::Error, process::{Command, Output}};
+use std::{path::{Path, PathBuf}, process::{Command, Output}};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 
@@ -83,12 +83,11 @@ impl It {
         return v;
     }
 
-    pub fn delete_chain(&mut self, tbl: String, chn: String) -> Result<(), Box<dyn Error>> {
+    pub fn delete_chain(&mut self, tbl: String, chn: String) -> bool {
         if is_builtin_chain(tbl, chn) {
-            return Err("can\'t delete a built-in chain")?;
-        } else{
-            Ok(())
+            return false
         }
+        true
     }
 
     pub fn run_command(&mut self) -> Output{
@@ -122,11 +121,13 @@ pub fn is_builtin_chain(table: String, chain: String) -> bool {
 
 #[cfg(test)]
 mod tests {
+    use crate::{build_it, ListOptions};
+
     #[test]
     fn is_builtin_chain_test() {
         let conditions = &[
             ("filter", "OUTPUT", true),
-            ("filter", "OUTPUTmew", true),
+            ("filter", "OUTPUTmew", false),
         ];
         for (t, c,r )in conditions {
             let result = crate::is_builtin_chain(t.to_string(),c.to_string());
@@ -134,16 +135,20 @@ mod tests {
             assert_eq!(&result,r);
         }
     }
-
+    
+    #[test]
     fn delete_chain_test() {
         let conditions = &[
-            ("filter", "OUTPUT", true),
+            ("filter", "OUTPUT", false),
             ("filter", "OUTPUTmew", true),
-        ];
-        for (t, c,r )in conditions {
-            let result = crate::delete_chain(t.to_string(),c.to_string());
-            println!("{:?}",result);
-            assert_eq!(&result,r);
+            ];
+            for (t, c,r )in conditions {
+                let result = build_it(6, false, false, ListOptions {
+                    table: String::from("mangle"),
+                    chain: String::from("INPUT"),
+                    verbose: true,
+                }).unwrap().delete_chain(t.to_string(),c.to_string());
+                assert_eq!(&result,r);
         }
     }
 }
