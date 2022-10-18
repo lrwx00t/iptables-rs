@@ -1,6 +1,6 @@
 # iptables-rs
 
-`iptables-rs` is a library in Rust to abstract direct interacting with `iptables`. The tool provides support for `iptable` and `ip6table`. Currently, it provides basic support for `iptables` data types that are translated into Rust.
+`iptables-rs` is a library in Rust to abstract direct interacting with `iptables`. The tool provides support for `iptables` and `ip6tables`. Currently, it provides basic support for `iptables` data types that are translated into Rust.
 
 ## Project Structure
 
