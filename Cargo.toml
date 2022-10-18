@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "iptables-rs",
+    "iptables-rs-lib",
+]
